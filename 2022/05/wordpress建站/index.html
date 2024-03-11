@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"crayfishxu.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="开始最近又开始折腾了域名、博客、服务器，之前我买的域名是与我的github博客crayfishxu.github.io绑定在一起的，近期搞了好几台免费的甲骨文服务器，没什么需求就不用升级到付费账号。  配置环境我在每台服务器都装了宝塔面板，这次用两台服务器并使用了甲骨文免费的负载均衡，配置负载均衡需要两台服务器在同一个子网。接着在宝塔中安装Nginx、PHP、mysql，直接一键安装即可。   然">
+<meta property="og:type" content="article">
+<meta property="og:title" content="wordpress建站">
+<meta property="og:url" content="https://crayfishxu.github.io/2022/05/wordpress%E5%BB%BA%E7%AB%99/">
+<meta property="og:site_name" content="CrayfishXu">
+<meta property="og:description" content="开始最近又开始折腾了域名、博客、服务器，之前我买的域名是与我的github博客crayfishxu.github.io绑定在一起的，近期搞了好几台免费的甲骨文服务器，没什么需求就不用升级到付费账号。  配置环境我在每台服务器都装了宝塔面板，这次用两台服务器并使用了甲骨文免费的负载均衡，配置负载均衡需要两台服务器在同一个子网。接着在宝塔中安装Nginx、PHP、mysql，直接一键安装即可。   然">
+<meta property="og:locale">
+<meta property="og:image" content="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/ed9814af814168664ff8f1009c06ff0c.png">
+<meta property="og:image" content="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/bb3100f2b9717846b8f074a6c28e68db.png">
+<meta property="og:image" content="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/92154c106fb4f70a2c01887ad7f4ea03.png">
+<meta property="og:image" content="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/fdad1712f4f64cfe2448460f9076f977.png">
+<meta property="og:image" content="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/ce8141a0b9c0f0cfa076a58f61c45c83.png">
+<meta property="og:image" content="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/e239227f9e8933aca0dd92e6ca95c97a.png">
+<meta property="og:image" content="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/8ae6f9faa609d7def535172cb15937f0.png">
+<meta property="og:image" content="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/d9c3c37e3959f6e719d9c82b8a52cf3b.png">
+<meta property="article:published_time" content="2022-05-23T00:48:54.000Z">
+<meta property="article:modified_time" content="2022-05-23T06:54:24.296Z">
+<meta property="article:author" content="CrayfishXu">
+<meta property="article:tag" content="&lt;big&gt;wordpress&lt;&#x2F;big&gt;">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/ed9814af814168664ff8f1009c06ff0c.png">
+
+<link rel="canonical" href="https://crayfishxu.github.io/2022/05/wordpress%E5%BB%BA%E7%AB%99/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>wordpress建站 | CrayfishXu</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?aa8b5bbdb51f9d7edb750ac88f6fa692";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">CrayfishXu</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">专注Android，填坑铺路</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://crayfishxu.github.io/2022/05/wordpress%E5%BB%BA%E7%AB%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="CrayfishXu">
+      <meta itemprop="description" content="专注Android，填坑铺路">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CrayfishXu">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          wordpress建站
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-05-23 08:48:54 / Modified: 14:54:24" itemprop="dateCreated datePublished" datetime="2022-05-23T08:48:54+08:00">2022-05-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%BB%BA%E7%AB%99/" itemprop="url" rel="index"><span itemprop="name">建站</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>最近又开始折腾了域名、博客、服务器，之前我买的域名是与我的github博客<a href="https://crayfishxu.github.io/">crayfishxu.github.io</a>绑定在一起的，近期搞了好几台免费的甲骨文服务器，没什么需求就不用升级到付费账号。</p>
+<p><img src="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/ed9814af814168664ff8f1009c06ff0c.png" alt="image-20220523091454886"></p>
+<h2 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h2><p>我在每台服务器都装了宝塔面板，这次用两台服务器并使用了甲骨文免费的负载均衡，配置负载均衡需要两台服务器在同一个子网。接着在宝塔中安装Nginx、PHP、mysql，直接一键安装即可。</p>
+<p><img src="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/bb3100f2b9717846b8f074a6c28e68db.png" alt="image-20220523092406397"></p>
+<p><img src="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/92154c106fb4f70a2c01887ad7f4ea03.png" alt="image-20220523140421698"></p>
+<p>然后需要将负载平衡器的ip地址与域名绑定，如此访问平衡器的ip或者域名就会将流量均衡到两台服务器了。</p>
+<p><img src="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/fdad1712f4f64cfe2448460f9076f977.png" alt="image-20220523140949728"></p>
+<h2 id="如何配置ssl"><a href="#如何配置ssl" class="headerlink" title="如何配置ssl"></a>如何配置ssl</h2><p>在监听程序中添加443的端口监听，证书可以宝塔上申请Let’s Encrypt免费证书。</p>
+<p><img src="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/ce8141a0b9c0f0cfa076a58f61c45c83.png" alt="image-20220523141255349"></p>
+<h2 id="安装WordPress"><a href="#安装WordPress" class="headerlink" title="安装WordPress"></a>安装WordPress</h2><p>首先在宝塔上新建“站点”，域名填写IP、域名，两台服务器站点都需要填入域名，数据库可自行选择安装。</p>
+<p><img src="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/e239227f9e8933aca0dd92e6ca95c97a.png" alt="image-20220523145301419"></p>
+<p>新建完“站点”，将下载好的wordpress-5.9.3-zh_CN.zip版本上传至根目录</p>
+<p><img src="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/8ae6f9faa609d7def535172cb15937f0.png" alt="image-20220523145345152"></p>
+<p>随后解压文件，把wordpress文件夹下的文件拷贝到根目录，删除wordpress文件夹。</p>
+<p><img src="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrosunvakun4/b/bucket-public/o/2022/05/d9c3c37e3959f6e719d9c82b8a52cf3b.png" alt="image-20220523145410400"></p>
+<p>输入域名或ip即可进入安装操作，安装过程中选择配置数据库。</p>
+<p>如此之后就可以用ip正常访问了，进入&#x2F;wp-admin后台，将设置中的站点改成域名。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/big-wordpress-big/" rel="tag"># <big>wordpress</big></a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/03/SEO%E4%BC%98%E5%8C%96%E5%85%A5%E9%97%A8%E2%80%94%E2%80%94%E6%B7%BB%E5%8A%A0%E7%AB%99%E7%82%B9%E5%9C%B0%E5%9B%BE/" rel="prev" title="SEO优化入门——添加站点地图">
+      <i class="fa fa-chevron-left"></i> SEO优化入门——添加站点地图
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B"><span class="nav-number">1.</span> <span class="nav-text">开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83"><span class="nav-number">2.</span> <span class="nav-text">配置环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AEssl"><span class="nav-number">3.</span> <span class="nav-text">如何配置ssl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85WordPress"><span class="nav-number">4.</span> <span class="nav-text">安装WordPress</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">CrayfishXu</p>
+  <div class="site-description" itemprop="description">专注Android，填坑铺路</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CrayfishXu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
